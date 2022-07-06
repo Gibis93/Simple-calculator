@@ -12,10 +12,9 @@
     background: black;
     color: white;
     text-align: right;
-    padding: 0 5px;
-    font-size: 48pt;
+    padding: 20px 5px;
+    font-size: 40px;
     max-width: 400px;
-    line-height: 100px;
   }
 
   &__calcBody {
@@ -24,6 +23,7 @@
     flex-wrap: wrap;
     max-width: 400px;
     justify-content: center;
+
 
     &__calcButtons {
       font-size: 20px;
@@ -38,12 +38,12 @@
       border: 0.5px solid gray;
 
       &:nth-child(17) {
-        width: 200px;
         border-bottom-left-radius: 5px;
       }
 
       &:last-child {
         border-bottom-right-radius: 5px;
+        width: 200px
       }
     }
   }

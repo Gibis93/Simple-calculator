@@ -1,59 +1,55 @@
-import Head from 'next/head';
-import styles from '../styles/Home.module.scss';
-import React, { useState, useEffect } from 'react';
-
+import Head from "next/head";
+import styles from "../styles/Home.module.scss";
+import React, { useEffect, useState } from "react";
+import { math } from "./utils/math.js";
 const calcButtons = [
   ["7", "8", "9", "+"],
   ["4", "5", "6", "-"],
-  ["1", "2", "3", "X"],
-  [".", "0", "CE", "÷"],
-  ["C", "=", "%"]
-]
-
-const math = (a, b, sign) =>
-  sign === "+" ? a + b : sign === "-" ? a - b : sign === "X" ? a * b : a / b;
+  ["1", "2", "3", "x"],
+  [".", "0", "C", "÷"],
+  ["%", "+/-", "="],
+];
 
 export default function Home() {
-
   const [calc, setCalc] = useState({
     sign: "+",
     num: 0,
     res: 0,
   });
+  const [message, setMessage] = useState("");
 
-  /* const [history, setHistory] = useState([])
- 
-   const orderHistoryByTime = (list) => list.slice(0).reverse();
- 
- */
   const handleClick = (e) => {
+    setMessage("");
     const btn = e.target.value;
     switch (btn) {
       case "+":
       case "-":
-      case "X":
+      case "x":
       case "÷":
-        signClick(btn)
+        signClick(btn);
         break;
-      case ("CE"):
-        backspaceClick(btn)
+      case "CE":
+        backspaceClick(btn);
         break;
-      case ("C"):
-        resetClick()
+      case "C":
+        resetClick();
         break;
-      case ("."):
-        commaClick(btn)
+      case ".":
+        commaClick(btn);
         break;
-      case ("="):
-        resultClick()
+      case "=":
+        resultClick();
         break;
-      case ("%"):
-        percentageClick()
+      case "%":
+        percentageClick();
+        break;
+      case "+/-":
+        invertsignClick();
         break;
       default:
-        numClick(btn)
+        numClick(btn);
     }
-  }
+  };
 
   const signClick = (btn) => {
     setCalc({
@@ -63,20 +59,13 @@ export default function Home() {
         ? calc.res
         : !calc.res
           ? calc.num
-          : toLocaleString(
-            math(
-              Number(calc.res),
-              Number(calc.num),
-              calc.sign
-            )
-          ),
+          : toLocaleString(math(Number(calc.res), Number(calc.num), calc.sign)),
       num: 0,
     });
-    // setHistory(...history, { sign: btn })
-  }
+  };
   const backspaceClick = (btn) => {
-    console.log('backspace click', btn)
-  }
+    console.log("backspace click", btn);
+  };
 
   const resetClick = () => {
     setCalc({
@@ -85,48 +74,28 @@ export default function Home() {
       num: 0,
       res: 0,
     });
-  }
-
+  };
   const commaClick = (btn) => {
     setCalc({
       ...calc,
       num: !calc.num.toString().includes(".") ? calc.num + btn : calc.num,
     });
-  }
+  };
 
   const resultClick = () => {
     if (calc.sign && calc.num) {
-      setCalc({
-        ...calc,
-        res:
-          calc.num === "0" && calc.sign === "/"
-            ? "Can't divide with 0"
-            : math(
-              Number(calc.res),
-              Number(calc.num),
-              calc.sign
-            ),
-        sign: "",
-        num: 0,
-      });
-      /*
-      setHistory({ ...history, num2: calc.num, res: calc.res })
-      setCalc({ ...calc, num: 0 })
-      */
-    }
-  }
-  /*
-    useEffect(() => {
-      fetch("https://edgemony-backend.herokuapp.com/messages", {
+      fetch("http://localhost:3000/api/resolve", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify(calc),
+      }).then(async (response) => {
+        if (!response.ok) {
+          setMessage("Can't divide by 0");
+        }
+        const data = await response.json();
+        return setCalc({ num: 0, res: data.response, sign: 0 });
       });
-      console.log("something is happening")
-    }, [calc])
-  */
+    }
+  };
 
   const percentageClick = () => {
     let num = calc.num ? parseFloat(calc.num) : 0;
@@ -137,17 +106,28 @@ export default function Home() {
       res: (res /= Math.pow(100, 1)),
       sign: "",
     });
-  }
+  };
+
+  const invertsignClick = () => {
+    setCalc({
+      ...calc,
+      num: calc.num ? (calc.num) * -1 : 0,
+      res: calc.res ? (calc.res) * -1 : 0,
+      sign: "",
+    });
+  };
 
   const numClick = (btn) => {
     setCalc({
       ...calc,
       num:
-        calc.num === 0 ? btn : calc.num != 0 ? (calc.num + btn) : (calc.num + '.' + btn),
-    })
-    // setHistory({ ...history, num1: btn })
-  }
-
+        calc.num === 0
+          ? btn
+          : calc.num != 0
+            ? calc.num + btn
+            : calc.num + "." + btn,
+    });
+  };
 
   return (
     <>
@@ -162,14 +142,14 @@ export default function Home() {
       <div className={styles.container}>
         <main>
           <div className={styles.container__calcDisplay}>
-            {calc.num ? calc.num : calc.res}
+            {message.length > 0 ? message : calc.num ? calc.num : calc.res}
           </div>
           <div className={styles.container__calcBody}>
             {calcButtons.flat().map((el, index) => (
               <button
                 key={index}
                 onClick={handleClick}
-                className={styles.container_calcBody_calcButtons}
+                className={styles.container__calcBody__calcButtons}
                 value={el}>
                 {" "}
                 {el}
