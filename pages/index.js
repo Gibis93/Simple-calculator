@@ -2,12 +2,14 @@ import Head from "next/head";
 import styles from "../styles/Home.module.scss";
 import React, { useEffect, useState } from "react";
 import { math } from "./utils/math.js";
+
+const BASE_URL = "http://localhost:3000/api/resolve";
 const calcButtons = [
   ["7", "8", "9", "+"],
   ["4", "5", "6", "-"],
   ["1", "2", "3", "x"],
   [".", "0", "C", "÷"],
-  ["%", "+/-", "="],
+  ["%", "+/-", "=", "his"],
 ];
 
 export default function Home() {
@@ -17,6 +19,8 @@ export default function Home() {
     res: 0,
   });
   const [message, setMessage] = useState("");
+
+  const [history, setHistory] = useState([])
 
   const handleClick = (e) => {
     setMessage("");
@@ -45,6 +49,9 @@ export default function Home() {
         break;
       case "+/-":
         invertsignClick();
+        break;
+      case "his":
+        getHistoryData();
         break;
       default:
         numClick(btn);
@@ -84,7 +91,7 @@ export default function Home() {
 
   const resultClick = () => {
     if (calc.sign && calc.num) {
-      fetch("http://localhost:3000/api/resolve", {
+      fetch(`${BASE_URL}`, {
         method: "POST",
         body: JSON.stringify(calc),
       }).then(async (response) => {
@@ -129,6 +136,19 @@ export default function Home() {
     });
   };
 
+  const getHistoryData = async () => {
+    const res = await fetch(`${BASE_URL}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      }
+    });
+
+    if (res.status >= 200 && res.status <= 299) {
+      return await res.json();
+    }
+  }
+
   return (
     <>
       <Head>
@@ -142,6 +162,7 @@ export default function Home() {
       <div className={styles.container}>
         <main>
           <div className={styles.container__calcDisplay}>
+            {history}
             {message.length > 0 ? message : calc.num ? calc.num : calc.res}
           </div>
           <div className={styles.container__calcBody}>
