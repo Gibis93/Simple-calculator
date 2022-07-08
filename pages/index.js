@@ -9,7 +9,7 @@ const calcButtons = [
   ["4", "5", "6", "-"],
   ["1", "2", "3", "x"],
   [".", "0", "C", "÷"],
-  ["%", "+/-", "=", "his"],
+  ["%", "+/-", "=",],
 ];
 
 export default function Home() {
@@ -20,8 +20,6 @@ export default function Home() {
   });
   const [message, setMessage] = useState("");
 
-  const [history, setHistory] = useState([])
-
   const handleClick = (e) => {
     setMessage("");
     const btn = e.target.value;
@@ -31,9 +29,6 @@ export default function Home() {
       case "x":
       case "÷":
         signClick(btn);
-        break;
-      case "CE":
-        backspaceClick(btn);
         break;
       case "C":
         resetClick();
@@ -69,9 +64,6 @@ export default function Home() {
           : toLocaleString(math(Number(calc.res), Number(calc.num), calc.sign)),
       num: 0,
     });
-  };
-  const backspaceClick = (btn) => {
-    console.log("backspace click", btn);
   };
 
   const resetClick = () => {
@@ -136,19 +128,6 @@ export default function Home() {
     });
   };
 
-  const getHistoryData = async () => {
-    const res = await fetch(`${BASE_URL}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      }
-    });
-
-    if (res.status >= 200 && res.status <= 299) {
-      return await res.json();
-    }
-  }
-
   return (
     <>
       <Head>
@@ -162,7 +141,6 @@ export default function Home() {
       <div className={styles.container}>
         <main>
           <div className={styles.container__calcDisplay}>
-            {history}
             {message.length > 0 ? message : calc.num ? calc.num : calc.res}
           </div>
           <div className={styles.container__calcBody}>

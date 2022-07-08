@@ -37,6 +37,14 @@
       outline: inherit;
       border: 0.5px solid gray;
 
+      &:active {
+        transform: scale(0.9);
+        -webkit-box-shadow: inset 0px 0px 14px -7px rgba(0, 0, 0, 0.5);
+        -moz-box-shadow: inset 0px 0px 14px -7px rgba(0, 0, 0, 0.5);
+        -o-box-shadow: inset 0px 0px 14px -7px rgba(0, 0, 0, 0.5);
+        box-shadow: inset 0px 0px 14px -7px rgba(0, 0, 0, 0.5);
+      }
+
       &:nth-child(17) {
         border-bottom-left-radius: 5px;
       }
