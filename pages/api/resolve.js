@@ -1,4 +1,4 @@
-import { math } from "../utils/math.js";
+import { math } from "../../utils/math";
 
 export default function handler(req, res) {
     const request = JSON.parse(req.body);

@@ -1,7 +1,7 @@
 import Head from "next/head";
 import styles from "../styles/Home.module.scss";
 import React, { useState } from "react";
-import { math } from "./utils/math.js";
+import { math } from "../utils/math";
 
 const BASE_URL = "http://localhost:3000/api/resolve";
 const calcButtons = [
