@@ -1,6 +1,6 @@
 import Head from "next/head";
 import styles from "../styles/Home.module.scss";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { math } from "./utils/math.js";
 
 const BASE_URL = "http://localhost:3000/api/resolve";
